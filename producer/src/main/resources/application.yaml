@@ -11,8 +11,8 @@ camel:
       schema-registry-u-r-l: http://localhost:8081
       value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
 
+spring:
+  webflux:
+    base-path: "/producer"
 server:
-  servlet:
-    context-path: /producer
   port: 8090
-

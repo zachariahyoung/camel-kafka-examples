@@ -14,7 +14,7 @@ public class TimerRouteBuilder extends RouteBuilder {
     @Override
     public void configure() {
 
-        from("timer://foo?fixedRate=true&period=10000")
+        from("timer://foo?fixedRate=true&period=1000")
                 .routeId(TimerRouteBuilder.class.getName() + " Timer")
                 .removeHeaders("*")
                 .process(protobufProcessor)

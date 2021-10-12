@@ -17,10 +17,9 @@ camel:
         "[specific.protobuf.value.type]": com.zandriod.consumer.proto.Timer
       poll-on-error: reconnect
 
+spring:
+  webflux:
+    base-path: "/consumer"
 server:
-  servlet:
-    context-path: /consumer
+  port: 8092
 
-logging:
-  level:
-    org.apache.camel.component.kafka: trace
