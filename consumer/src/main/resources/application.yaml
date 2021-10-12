@@ -4,7 +4,7 @@ camel:
   component:
     kafka:
       brokers: localhost:9092
-      client-id: listener_infrastructure_kafka_consumer
+      client-id: consumer
       allow-manual-commit: true
       auto-commit-enable: false
       seek-to: ""
@@ -17,10 +17,9 @@ camel:
         "[specific.protobuf.value.type]": com.zandriod.consumer.proto.Timer
       poll-on-error: reconnect
 
-
 server:
   servlet:
-    context-path: /listener_infrastructure_kafka_consumer
+    context-path: /consumer
 
 logging:
   level:

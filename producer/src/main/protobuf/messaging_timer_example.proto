@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package jbhunt;
+
+import "google/protobuf/timestamp.proto";
+
+option java_package = "com.zandriod.producer.producer.proto";
+option java_multiple_files = true;
+
+message Timer {
+  string name = 1;
+  int32 value = 2;
+  .jbhunt.Timer.StatusType status_type = 3;
+  .google.protobuf.Timestamp timer_datetime = 4;
+
+  enum StatusType {
+    Active = 0;
+    Inactive = 1;
+  }
+}

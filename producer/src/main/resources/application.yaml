@@ -1,0 +1,18 @@
+camel:
+  springboot:
+    main-run-controller: true
+  component:
+    kafka:
+      brokers: localhost:9092
+      enable-idempotence: true
+      client-id: producer
+      retries: 3
+      request-required-acks: all
+      schema-registry-u-r-l: http://localhost:8081
+      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
+
+server:
+  servlet:
+    context-path: /producer
+  port: 8090
+
