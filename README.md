@@ -32,6 +32,16 @@ Next you can use the Control Center to confirm records are being created.
   
 </h1>
 
+## Start simple web service
+
+You can run the web service.  Make sure to navigate to the health check folder first.
+
+    mvn spring-boot:run
+
+Next you can use run the following curl command to confirm the service is running.
+    
+    curl http://localhost:8091/check/actuator/health
+
 ## Start Consumer
 
 ### How to run
