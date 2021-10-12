@@ -6,6 +6,14 @@
 3. Run _docker-compose up -d_ in the command prompt
 4. Navigate to http://localhost:9021 to view the Control Center and interact with your local cluster via GUI. 9021 is the Confluent Platform's default port.
 
+## Message Flow
+
+<h1 align="center">
+  <a href="https://github.com/jeffreytse/jekyll-spaceship">
+    <img alt="producer" src="https://raw.githubusercontent.com/zachariahyoung/camel-kafka-examples/master/images/diagram.jpg" width="400">
+  </a>
+  
+</h1>
 
 ## Start producer
 
