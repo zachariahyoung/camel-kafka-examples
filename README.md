@@ -15,11 +15,11 @@ You can run the example producer using.  Make sure to navigate to the producer f
 
     mvn spring-boot:run
 
-Next you can use the Control Center to confirm records are being created into the 
+Next you can use the Control Center to confirm records are being created.
 
 <h1 align="center">
   <a href="https://github.com/jeffreytse/jekyll-spaceship">
-    <img alt="spaceship →~ jekyll" src="https://raw.githubusercontent.com/jeffreytse/jekyll-spaceship/master/logos/jekyll-spaceship-logo.png" width="400">
+    <img alt="producer" src="https://raw.githubusercontent.com/zachariahyoung/camel-kafka-examples/master/images/producer.PNG" width="600">
   </a>
-  <br> 🚀 Jekyll Spaceship 🚀 <br>
+  
 </h1>
