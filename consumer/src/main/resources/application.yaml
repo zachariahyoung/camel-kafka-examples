@@ -1,0 +1,27 @@
+camel:
+  springboot:
+    main-run-controller: true
+  component:
+    kafka:
+      brokers: localhost:9092
+      client-id: listener_infrastructure_kafka_consumer
+      allow-manual-commit: true
+      auto-commit-enable: false
+      seek-to: ""
+      auto-offset-reset: "latest"
+      break-on-first-error: true
+      group-id: messaging-consumer-example
+      value-deserializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+      schema-registry-u-r-l: http://localhost:8081
+      additional-properties:
+        "[specific.protobuf.value.type]": com.zandriod.consumer.proto.Timer
+      poll-on-error: reconnect
+
+
+server:
+  servlet:
+    context-path: /listener_infrastructure_kafka_consumer
+
+logging:
+  level:
+    org.apache.camel.component.kafka: trace
