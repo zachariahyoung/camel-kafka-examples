@@ -31,3 +31,15 @@ Next you can use the Control Center to confirm records are being created.
   </a>
   
 </h1>
+
+## Start Consumer
+
+### How to run
+
+You can run the example producer using.  Make sure to navigate to the consumer folder first.
+
+    mvn spring-boot:run
+
+Review the log to see messages being printed.
+
+
