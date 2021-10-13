@@ -40,7 +40,7 @@ You can run the web service.  Make sure to navigate to the health check folder f
 
 Next you can use run the following curl command to confirm the service is running.
     
-    curl http://localhost:8091/check/actuator/health
+    curl http://localhost:802/check/actuator/health
 
 ## Start Consumer
 
