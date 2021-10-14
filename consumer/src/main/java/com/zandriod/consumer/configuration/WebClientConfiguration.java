@@ -16,7 +16,7 @@ public class WebClientConfiguration {
 
         return WebClient.builder()
                 .filter(loggingFilter())
-                .baseUrl("/check").build();
+                .baseUrl("http://localhost:8092/check").build();
     }
 
     private static ExchangeFilterFunction loggingFilter() {

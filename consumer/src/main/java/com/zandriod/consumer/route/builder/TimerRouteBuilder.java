@@ -1,5 +1,6 @@
 package com.zandriod.consumer.route.builder;
 
+import com.zandriod.consumer.exception.NonRecoverableException;
 import com.zandriod.consumer.processor.HealthCheckProcessor;
 import com.zandriod.consumer.processor.KafkaOffsetManagerProcessor;
 import com.zandriod.consumer.proto.Timer;
@@ -22,7 +23,7 @@ public class TimerRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        onException(WebClientRequestException.class)
+        onException(NonRecoverableException.class)
                 .handled(true)
                 .process(kafkaOffsetManagerProcessor);
 

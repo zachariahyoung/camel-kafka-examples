@@ -2,6 +2,7 @@ package com.zandriod.healthcheck.controller;
 
 import com.zandriod.healthcheck.dto.ResilienceDto;
 import com.zandriod.healthcheck.service.ResilienceService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,5 +39,10 @@ public class ResilienceController {
                 .delayElement(Duration.ofSeconds(3))
                 .map(resilienceDto -> ResponseEntity.ok(resilienceDto))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/gateway")
+    public ResponseEntity getUnavailable(){
+        return new ResponseEntity(HttpStatus.GATEWAY_TIMEOUT);
     }
 }

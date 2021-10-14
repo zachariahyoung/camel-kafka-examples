@@ -2,6 +2,7 @@ package com.zandriod.consumer.processor;
 
 import com.zandriod.consumer.client.HealthCheckClient;
 import com.zandriod.consumer.dto.Health;
+import com.zandriod.consumer.dto.ResilienceDto;
 import com.zandriod.consumer.proto.Timer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -25,9 +26,14 @@ public class HealthCheckProcessor implements Processor {
 
         log.info(this.dumpKafkaDetails(exchange));
 
-        Health block = healthCheckClient.fetchStatus().block();
+//        Health health = healthCheckClient.fetchStatus().block();
+//        log.info(health.getStatus());
 
-        log.info(block.getStatus());
+//        ResilienceDto resilienceDto = healthCheckClient.fetchDelay().block();
+//        log.info(resilienceDto.getStatus());
+
+        ResilienceDto resilienceDto = healthCheckClient.fetchGateway();
+        log.info(resilienceDto.getStatus());
 
     }
 

@@ -20,6 +20,7 @@
         <protobuf.version>3.18.1</protobuf.version>
         <camel.version>3.12.0</camel.version>
         <protoc-jar-maven-plugin.version>3.11.4</protoc-jar-maven-plugin.version>
+        <resilience4j.version>1.7.0</resilience4j.version>
     </properties>
 
     <dependencyManagement>
@@ -45,11 +46,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-spring-boot-starter</artifactId>
-        </dependency>
-
         <!-- Camel -->
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
@@ -67,6 +63,20 @@
             <artifactId>kafka-protobuf-serializer</artifactId>
             <version>${confluent.platform.version}</version>
         </dependency>
+
+        <!-- Resilience4j -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot2</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-reactor</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+
 
         <!-- Lombok -->
         <dependency>

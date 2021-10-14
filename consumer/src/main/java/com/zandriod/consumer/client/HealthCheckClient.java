@@ -1,7 +1,13 @@
 package com.zandriod.consumer.client;
 
 import com.zandriod.consumer.dto.Health;
+import com.zandriod.consumer.dto.ResilienceDto;
+import com.zandriod.consumer.exception.BadClientRequestException;
 import com.zandriod.consumer.exception.NonRecoverableException;
+import com.zandriod.consumer.exception.RecoverableException;
+import com.zandriod.consumer.util.ResponseValidationUtil;
+import io.github.resilience4j.reactor.retry.RetryOperator;
+import io.github.resilience4j.retry.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,4 +34,52 @@ public class HealthCheckClient {
                 .bodyToMono(Health.class)
                 .onErrorMap(throwable -> throwable.getCause().getClass().equals(ConnectException.class), throwable -> new NonRecoverableException("host is down"));
     }
+
+//    @Retry(name = "check", fallbackMethod = "failedCheckRetry")
+    public Mono<ResilienceDto> fetchResilience() {
+        return healthCheckClient
+                .get()
+                .uri("http://localhost:8092/check/resilience")
+                .retrieve()
+                .bodyToMono(ResilienceDto.class);
+    }
+
+//    @Retry(name = "check", fallbackMethod = "failedCheckRetry")
+    public Mono<ResilienceDto> fetchException() {
+        return healthCheckClient
+                .get()
+                .uri("http://localhost:8092/check/exception")
+                .retrieve()
+                .bodyToMono(ResilienceDto.class);
+    }
+
+//    @Retry(name = "check", fallbackMethod = "failedCheckRetry")
+    public Mono<ResilienceDto> fetchDelay() {
+        return healthCheckClient
+                .get()
+                .uri("http://localhost:8092/check/delay")
+                .retrieve()
+                .bodyToMono(ResilienceDto.class);
+    }
+
+    public ResilienceDto fetchGateway() {
+        return healthCheckClient
+                .get()
+                .uri("/gateway")
+                .retrieve()
+                .onStatus(HttpStatus::isError, clientResponse -> {
+                    ResponseValidationUtil.codeValidation(clientResponse.rawStatusCode());
+                    throw new BadClientRequestException("Error while calling health service with response code " + clientResponse.rawStatusCode(), clientResponse.rawStatusCode());
+                })
+                .bodyToMono(ResilienceDto.class)
+                .transformDeferred(RetryOperator.of(Retry.ofDefaults("check")))
+                .onErrorResume(RecoverableException.class, this::failedCheckRetry)
+                .block();
+    }
+
+    public Mono<ResilienceDto> failedCheckRetry(RecoverableException recoverableException){
+       return Mono.error(new NonRecoverableException(recoverableException.getMessage()));
+    }
+
+
 }

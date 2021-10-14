@@ -23,3 +23,36 @@ spring:
 server:
   port: 8091
 
+resilience4j:
+  retry:
+    instances:
+      check:
+        maxRetryAttempts: 2
+        waitDuration: 100
+        retryExceptions:
+          - com.zandriod.consumer.exception.RecoverableException
+        ignoreExceptions:
+          - com.zandriod.consumer.exception.NonRecoverableException
+          - com.zandriod.consumer.exception.BadClientRequestException
+  circuitbreaker:
+    metrics:
+      enabled: true
+    instances:
+      check:
+        register-health-indicator: true
+        permitted-number-of-calls-in-half-open-state: 5
+        wait-duration-in-open-state: 3000
+        minimum-number-of-calls: 10
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 50
+        slow-call-duration-threshold: 1000
+        record-exceptions:
+          - com.zandriod.consumer.exception.NonRecoverableException
+        ignore-exceptions:
+          - com.zandriod.consumer.exception.RecoverableException
+  bulkhead:
+    instances:
+      check:
+        maxConcurrentCalls: 10
+
