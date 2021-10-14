@@ -32,7 +32,7 @@ public class HealthCheckProcessor implements Processor {
 //        ResilienceDto resilienceDto = healthCheckClient.fetchDelay().block();
 //        log.info(resilienceDto.getStatus());
 
-        ResilienceDto resilienceDto = healthCheckClient.fetchGateway();
+        ResilienceDto resilienceDto = healthCheckClient.fetchGateway().block();
         log.info(resilienceDto.getStatus());
 
     }

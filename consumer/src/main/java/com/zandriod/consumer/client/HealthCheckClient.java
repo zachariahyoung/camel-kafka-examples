@@ -62,7 +62,7 @@ public class HealthCheckClient {
                 .bodyToMono(ResilienceDto.class);
     }
 
-    public ResilienceDto fetchGateway() {
+    public Mono<ResilienceDto> fetchGateway() {
         return healthCheckClient
                 .get()
                 .uri("/gateway")
@@ -73,8 +73,8 @@ public class HealthCheckClient {
                 })
                 .bodyToMono(ResilienceDto.class)
                 .transformDeferred(RetryOperator.of(Retry.ofDefaults("check")))
-                .onErrorResume(RecoverableException.class, this::failedCheckRetry)
-                .block();
+                .onErrorResume(RecoverableException.class, this::failedCheckRetry);
+
     }
 
     public Mono<ResilienceDto> failedCheckRetry(RecoverableException recoverableException){

@@ -27,7 +27,7 @@ resilience4j:
   retry:
     instances:
       check:
-        maxRetryAttempts: 2
+        maxRetryAttempts: 3
         waitDuration: 100
         retryExceptions:
           - com.zandriod.consumer.exception.RecoverableException
