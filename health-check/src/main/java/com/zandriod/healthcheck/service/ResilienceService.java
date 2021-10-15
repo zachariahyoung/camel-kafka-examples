@@ -9,9 +9,7 @@ import reactor.core.publisher.Mono;
 public class ResilienceService {
 
     public Mono<ResilienceDto> fetchResilience(){
-        ResilienceDto resilienceDto = new ResilienceDto();
-        resilienceDto.setStatus("Hello World!");
-        return Mono.just(resilienceDto);
+        return Mono.just(new ResilienceDto("Hello World!"));
     }
     public Mono<ResilienceDto> fetchException(){
         throw new NonRecoverableException("Non Recoverable");

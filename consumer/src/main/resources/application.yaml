@@ -8,7 +8,7 @@ camel:
       allow-manual-commit: true
       auto-commit-enable: false
       seek-to: ""
-      auto-offset-reset: "latest"
+      auto-offset-reset: "earliest"
       break-on-first-error: true
       group-id: messaging-consumer-example
       value-deserializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer

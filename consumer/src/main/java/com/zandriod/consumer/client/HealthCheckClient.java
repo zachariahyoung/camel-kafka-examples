@@ -1,6 +1,5 @@
 package com.zandriod.consumer.client;
 
-import com.zandriod.consumer.dto.Health;
 import com.zandriod.consumer.dto.ResilienceDto;
 import com.zandriod.consumer.exception.BadClientRequestException;
 import com.zandriod.consumer.exception.NonRecoverableException;
@@ -26,12 +25,12 @@ public class HealthCheckClient {
         this.healthCheckClient = healthCheckClient;
     }
 
-    public Mono<Health> fetchStatus() {
+    public Mono<ResilienceDto> fetchStatus() {
         return healthCheckClient
                 .get()
                 .uri("http://localhost:8092/check/actuator/health")
                 .retrieve()
-                .bodyToMono(Health.class)
+                .bodyToMono(ResilienceDto.class)
                 .onErrorMap(throwable -> throwable.getCause().getClass().equals(ConnectException.class), throwable -> new NonRecoverableException("host is down"));
     }
 

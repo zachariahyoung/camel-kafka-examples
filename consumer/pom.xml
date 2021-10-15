@@ -12,10 +12,9 @@
     <artifactId>consumer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>consumer</name>
-    <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <confluent.platform.version>6.2.1</confluent.platform.version>
         <protobuf.version>3.18.1</protobuf.version>
         <camel.version>3.12.0</camel.version>

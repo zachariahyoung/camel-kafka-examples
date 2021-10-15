@@ -1,7 +1,6 @@
 package com.zandriod.consumer.processor;
 
 import com.zandriod.consumer.client.HealthCheckClient;
-import com.zandriod.consumer.dto.Health;
 import com.zandriod.consumer.dto.ResilienceDto;
 import com.zandriod.consumer.proto.Timer;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +25,18 @@ public class HealthCheckProcessor implements Processor {
 
         log.info(this.dumpKafkaDetails(exchange));
 
-//        Health health = healthCheckClient.fetchStatus().block();
-//        log.info(health.getStatus());
+        String eventType = exchange.getIn().getHeader("ce_type", String.class);
 
-//        ResilienceDto resilienceDto = healthCheckClient.fetchDelay().block();
-//        log.info(resilienceDto.getStatus());
+        log.info("Event Type " + eventType);
 
-        ResilienceDto resilienceDto = healthCheckClient.fetchGateway().block();
-        log.info(resilienceDto.getStatus());
+        ResilienceDto health = switch (eventType){
+            case "com.zandriod.messaging.exception" -> healthCheckClient.fetchResilience().block();
+            case "com.zandriod.messaging.gateway" -> healthCheckClient.fetchGateway().block();
+            case "com.zandriod.messaging.delay" -> healthCheckClient.fetchDelay().block();
+            default -> healthCheckClient.fetchStatus().block();
+        };
+
+        log.info("Status {} Event {} ", health.status(),eventType);
 
     }
 
