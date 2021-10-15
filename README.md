@@ -52,4 +52,14 @@ You can run the example producer using.  Make sure to navigate to the consumer f
 
 Review the log to see messages being printed.
 
+## Exception Use Cases
+
+### Bad Gateway
+
+One of the end point within the web service will return a http status 504.  This is a Gateway Timeout.  For this type of exceptions, a retry should be performed.  The retry is being handled with a resilience4j configurations within the application.yml.  Currently after the retry has failed the record is being sent to an error topic.
+
+You can run the Bad Gateway exeception by running the following command.
+    
+    mvn spring-boot:run -Dspring-boot.run.arguments=--type=gateway
+
 
