@@ -30,7 +30,7 @@ public class TimerRouteBuilder extends RouteBuilder {
 
         from("kafka:MESSAGING-TIMER-EXAMPLE")
                 .routeId(TimerRouteBuilder.class.getName() + " Timer")
-                .process(healthCheckProcessor)
+//                .process(healthCheckProcessor)
                 .process(exchange -> {
                     log.info(this.dumpKafkaDetails(exchange));
                 })

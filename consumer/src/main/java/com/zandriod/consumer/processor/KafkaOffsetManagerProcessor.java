@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.component.kafka.KafkaConstants;
-import org.apache.camel.component.kafka.KafkaManualCommit;
+import org.apache.camel.component.kafka.consumer.KafkaManualCommit;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -19,7 +19,7 @@ public class KafkaOffsetManagerProcessor implements Processor {
                     exchange.getIn().getHeader(KafkaConstants.MANUAL_COMMIT, KafkaManualCommit.class);
             if (manual != null) {
                 log.info("manually committing the offset for batch");
-                manual.commitSync();
+                manual.commit();
 
             }
         } else {
