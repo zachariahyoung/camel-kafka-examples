@@ -5,6 +5,7 @@ import com.zandriod.consumer.exception.BadClientRequestException;
 import com.zandriod.consumer.exception.NonRecoverableException;
 import com.zandriod.consumer.exception.RecoverableException;
 import com.zandriod.consumer.util.ResponseValidationUtil;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.reactor.retry.RetryOperator;
 import io.github.resilience4j.retry.Retry;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class HealthCheckClient {
         this.healthCheckClient = healthCheckClient;
     }
 
+//    @CircuitBreaker(name="check", fallbackMethod="method1")
     public Mono<ResilienceDto> fetchStatus() {
         return healthCheckClient
                 .get()
@@ -80,5 +82,8 @@ public class HealthCheckClient {
        return Mono.error(new NonRecoverableException(recoverableException.getMessage()));
     }
 
+    public String method1(Exception e) {
+        return "fallback response";
+    }
 
 }

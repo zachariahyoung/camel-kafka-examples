@@ -23,6 +23,37 @@ spring:
 server:
   port: 8091
 
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - prometheus
+          - metrics
+  health:
+    jms:
+      enabled: false
+    ldap:
+      enabled: false
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+      probes:
+        enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    info:
+      enabled: true
+
+
 resilience4j:
   retry:
     instances:
