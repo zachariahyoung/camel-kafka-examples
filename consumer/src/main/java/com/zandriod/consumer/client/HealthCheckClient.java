@@ -6,7 +6,6 @@ import com.zandriod.consumer.exception.NonRecoverableException;
 import com.zandriod.consumer.exception.RecoverableException;
 import com.zandriod.consumer.util.ResponseValidationUtil;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.reactor.retry.RetryOperator;
 import io.github.resilience4j.retry.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,14 +25,14 @@ public class HealthCheckClient {
         this.healthCheckClient = healthCheckClient;
     }
 
-//    @CircuitBreaker(name="check", fallbackMethod="method1")
+    @CircuitBreaker(name="check", fallbackMethod="fallback")
     public Mono<ResilienceDto> fetchStatus() {
         return healthCheckClient
                 .get()
                 .uri("http://localhost:8092/check/actuator/health")
                 .retrieve()
-                .bodyToMono(ResilienceDto.class)
-                .onErrorMap(throwable -> throwable.getCause().getClass().equals(ConnectException.class), throwable -> new NonRecoverableException("host is down"));
+                .bodyToMono(ResilienceDto.class);
+//                .onErrorMap(throwable -> throwable.getCause().getClass().equals(ConnectException.class), throwable -> new NonRecoverableException("host is down"));
     }
 
 //    @Retry(name = "check", fallbackMethod = "failedCheckRetry")
@@ -73,7 +72,7 @@ public class HealthCheckClient {
                     throw new BadClientRequestException("Error while calling health service with response code " + clientResponse.rawStatusCode(), clientResponse.rawStatusCode());
                 })
                 .bodyToMono(ResilienceDto.class)
-                .transformDeferred(RetryOperator.of(Retry.ofDefaults("check")))
+            //    .transformDeferred(RetryOperator.of(Retry.ofDefaults("check")))
                 .onErrorResume(RecoverableException.class, this::failedCheckRetry);
 
     }
@@ -82,8 +81,8 @@ public class HealthCheckClient {
        return Mono.error(new NonRecoverableException(recoverableException.getMessage()));
     }
 
-    public String method1(Exception e) {
-        return "fallback response";
+    public String fallback(Throwable  t) {
+        return "fallback value";
     }
 
 }

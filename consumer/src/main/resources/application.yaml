@@ -15,7 +15,11 @@ camel:
       schema-registry-u-r-l: http://localhost:8081
       additional-properties:
         "[specific.protobuf.value.type]": com.zandriod.consumer.proto.Timer
-      poll-on-error: reconnect
+      poll-on-error: retry
+  resilience4j:
+    circuit-breaker:
+      register-health-indicator: true
+
 
 spring:
   webflux:
@@ -70,18 +74,15 @@ resilience4j:
       enabled: true
     instances:
       check:
-        register-health-indicator: true
-        permitted-number-of-calls-in-half-open-state: 5
-        wait-duration-in-open-state: 3000
-        minimum-number-of-calls: 10
-        sliding-window-size: 20
-        failure-rate-threshold: 50
-        slow-call-rate-threshold: 50
-        slow-call-duration-threshold: 1000
-        record-exceptions:
-          - com.zandriod.consumer.exception.NonRecoverableException
-        ignore-exceptions:
-          - com.zandriod.consumer.exception.RecoverableException
+        wait-duration-in-open-state: 1m
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: count-based
+        sliding-window-size: 5
+        minimum-number-of-calls: 5
+        slow-call-duration-threshold: 10s
+        slow-call-rate-threshold: 60
+        failure-rate-threshold: 60
+
   bulkhead:
     instances:
       check:

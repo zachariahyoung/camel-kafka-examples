@@ -5,6 +5,9 @@ import com.zandriod.consumer.processor.HealthCheckProcessor;
 import com.zandriod.consumer.processor.KafkaOffsetManagerProcessor;
 import com.zandriod.consumer.proto.Timer;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.core.registry.RegistryEventConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
@@ -26,6 +29,7 @@ public class TimerRouteBuilder extends RouteBuilder {
 
     private final KafkaOffsetManagerProcessor kafkaOffsetManagerProcessor;
     private final HealthCheckProcessor healthCheckProcessor;
+    private final RegistryEventConsumer<CircuitBreaker> circuitBreakerRegistryEventConsumer;
     private ScheduledExecutorService executorService;
     private LongAdder count = new LongAdder();
     private static final int SIMULATED_FAILURES = 5;
@@ -33,8 +37,18 @@ public class TimerRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+        CircuitBreakerConfig config = CircuitBreakerConfig
+                .custom()
+                .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
+                .slidingWindowSize(10)
+                .failureRateThreshold(70.0f)
+                .build();
 
-        CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("pausable");
+        CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config);
+
+        CircuitBreaker circuitBreaker = registry.circuitBreaker("flightSearchService");
+
+//        CircuitBreaker.
 
         /*
          * Set a watcher for the circuit breaker events. This watcher simulates a check for a downstream
@@ -62,19 +76,29 @@ public class TimerRouteBuilder extends RouteBuilder {
                 });
 
         // Binds the configuration to the registry
-        getCamelContext().getRegistry().bind("pausableCircuit", circuitBreaker);
+        getCamelContext().getRegistry().bind("pausableCircuit", circuitBreakerRegistryEventConsumer);
+//
+//        onException(NonRecoverableException.class)
+//                .handled(true)
+//                .process(kafkaOffsetManagerProcessor);
 
-        onException(NonRecoverableException.class)
-                .handled(true)
-                .process(kafkaOffsetManagerProcessor);
 
+//        from("kafka:MESSAGING-TIMER-EXAMPLE")
+//                .routeId(TimerRouteBuilder.class.getName() + " Timer")
+//                .pausable(new KafkaConsumerListener(), o -> canContinue())
+//                .circuitBreaker()
+//                    .resilience4jConfiguration().circuitBreaker("pausableCircuit").end()
+//                .process(healthCheckProcessor)
+//                .end()
+//                .process(exchange -> {
+//                    log.info(this.dumpKafkaDetails(exchange));
+//                })
+//                .process(kafkaOffsetManagerProcessor);
 
         from("kafka:MESSAGING-TIMER-EXAMPLE")
                 .routeId(TimerRouteBuilder.class.getName() + " Timer")
-                .pausable(new KafkaConsumerListener(), o -> canContinue())
+//                .pausable(new KafkaConsumerListener(), o -> canContinue())
                 .process(healthCheckProcessor)
-                .circuitBreaker()
-                    .resilience4jConfiguration().circuitBreaker("pausableCircuit").end()
                 .process(exchange -> {
                     log.info(this.dumpKafkaDetails(exchange));
                 })
@@ -87,6 +111,8 @@ public class TimerRouteBuilder extends RouteBuilder {
         // First one should go through ...
         if (count.intValue() <= 1) {
             log.info("Count is 1, allowing processing to proceed");
+
+
             return true;
         }
 
@@ -99,6 +125,7 @@ public class TimerRouteBuilder extends RouteBuilder {
         log.info("Cannot proceed at the moment ... count is {}", count.intValue());
         return false;
     }
+
     public void increment() {
         count.increment();
     }
